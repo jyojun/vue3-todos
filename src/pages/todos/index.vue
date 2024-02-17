@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h2>To-Do List</h2>
+    <div class="d-flex justify-content-between mb-3">
+      <h2>To-Do List</h2>
+      <button class="btn btn-primary" @click="moveToCreatePage">
+        Create Todo
+      </button>
+    </div>
     <input
       class="form-control"
       type="text"
@@ -28,13 +33,14 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch, onUnmounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import TodoSimpleForm from "@/components/TodoSimpleForm.vue";
 import TodoList from "@/components/TodoList.vue";
 import PaginationBar from "@/components/PaginationBar.vue";
 import Toast from "@/components/Toast.vue";
 import axios from "axios";
 import { useToast } from "@/composables/toast";
+import { useRouter } from "vue-router";
 
 export default {
   components: { TodoSimpleForm, TodoList, PaginationBar, Toast },
@@ -45,6 +51,7 @@ export default {
     const currentPage = ref(1);
     const todos = ref([]);
     const searchText = ref("");
+    const router = useRouter();
 
     const { toastMessage, toastAlertType, showToast, triggerToast } =
       useToast();
@@ -57,6 +64,12 @@ export default {
     onMounted(() => {
       getTodos();
     });
+
+    const moveToCreatePage = () => {
+      router.push({
+        name: "TodoCreate",
+      });
+    };
 
     // debounce 적용
     let timeout = null;
@@ -142,6 +155,7 @@ export default {
       showToast,
       toastMessage,
       toastAlertType,
+      moveToCreatePage,
     };
   },
 };
