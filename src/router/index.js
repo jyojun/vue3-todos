@@ -18,14 +18,14 @@ const router = createRouter({
       component: Todos,
     },
     {
-      path: "/todos/:id",
-      name: "Todo",
-      component: Todo,
-    },
-    {
       path: "/todos/create",
       name: "TodoCreate",
       component: TodoCreate,
+    },
+    {
+      path: "/todos/:id",
+      name: "Todo",
+      component: Todo,
     },
   ],
 });

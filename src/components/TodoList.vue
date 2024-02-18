@@ -5,17 +5,15 @@
       style="cursor: pointer"
       @click="moveToPage(todo.id)"
     >
-      <div class="form-check">
+      <div>
         <input
-          class="form-check-input"
+          style="margin-right: 5px"
           type="checkbox"
           :checked="todo.completed"
           @change="toggleTodo(index, $event)"
           @click.stop
         />
-        <label class="form-check-label" :class="{ todo: todo.completed }">{{
-          todo.subject
-        }}</label>
+        <span :class="{ todo: todo.completed }">{{ todo.subject }}</span>
       </div>
       <div>
         <button class="btn btn-danger" @click.stop="deleteTodo(index)">

@@ -14,7 +14,6 @@
       @keyup.enter="searchTodo"
     />
     <hr />
-    <todo-simple-form @add-todo="addTodo" />
 
     <div v-if="!todos.length">There is nothing to display.</div>
     <todo-list
@@ -34,7 +33,6 @@
 
 <script>
 import { ref, computed, onMounted, watch } from "vue";
-import TodoSimpleForm from "@/components/TodoSimpleForm.vue";
 import TodoList from "@/components/TodoList.vue";
 import PaginationBar from "@/components/PaginationBar.vue";
 import Toast from "@/components/Toast.vue";
@@ -43,7 +41,7 @@ import { useToast } from "@/composables/toast";
 import { useRouter } from "vue-router";
 
 export default {
-  components: { TodoSimpleForm, TodoList, PaginationBar, Toast },
+  components: { TodoList, PaginationBar, Toast },
   setup() {
     const toggle = ref(false);
     const numberOfTodos = ref(0);

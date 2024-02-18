@@ -5,15 +5,7 @@
         >Todo App</router-link
       >
 
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <router-link
-            class="nav-link active"
-            aria-current="page"
-            :to="{ name: 'Home' }"
-            >Home</router-link
-          >
-        </li>
+      <ul class="navbar-nav me-auto mb-lg-0">
         <li class="nav-item">
           <router-link class="nav-link" :to="{ name: 'Todos' }"
             >Todos</router-link

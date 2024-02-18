@@ -6,9 +6,10 @@
         <div class="form-group">
           <label>Todo Subject</label>
           <input v-model="todo.subject" type="text" class="form-control" />
+          <div v-if="subjectError" class="text-red">{{ subjectError }}</div>
         </div>
       </div>
-      <div class="col-6">
+      <div v-if="editing" class="col-6">
         <div class="form-group">
           <label>Status</label>
           <div>
@@ -23,13 +24,26 @@
           </div>
         </div>
       </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label>Body</label>
+          <textarea
+            v-model="todo.body"
+            class="form-control"
+            cols="30"
+            rows="10"
+          ></textarea>
+        </div>
+      </div>
     </div>
     <button type="submit" class="btn btn-primary" :disabled="!todoUpdated">
-      Save
+      {{ editing ? "Update" : "Create" }}
     </button>
     <button class="btn btn-outline-dark m-2" @click="moveBack">Cancel</button>
   </form>
-  <toast v-if="showToast" :message="toastMessage" :type="toastAlertType" />
+  <transition name="fade">
+    <toast v-if="showToast" :message="toastMessage" :type="toastAlertType" />
+  </transition>
 </template>
 
 <script>
@@ -48,12 +62,17 @@ export default {
     editing: {
       type: Boolean,
       default: false,
+      body: "",
     },
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
     const router = useRouter();
-    const todo = ref(null);
+    const todo = ref({
+      subject: "",
+      completed: false,
+    });
+    const subjectError = ref("");
     const originalTodo = ref(null);
     const loading = ref(false);
     const id = route.params.id;
@@ -73,6 +92,7 @@ export default {
         originalTodo.value = { ...res.data };
         loading.value = false;
       } catch (err) {
+        loading.value = false;
         console.log(err);
         triggerToast("Something went wrong.", "danger");
       }
@@ -93,14 +113,29 @@ export default {
     }
 
     const onSave = async () => {
+      subjectError.value = "";
+      if (!todo.value.subject) {
+        subjectError.value = "Subject is required";
+        return;
+      }
       try {
-        const res = await axios.put(
-          `http://localhost:3000/todos/${id}`,
-          todo.value
-        );
+        let res;
+        console.log(props.editing);
+        if (props.editing) {
+          res = await axios.put(
+            `http://localhost:3000/todos/${id}`,
+            todo.value
+          );
+          originalTodo.value = { ...res.data };
+        } else {
+          res = await axios.post(`http://localhost:3000/todos`, todo.value);
+          todo.value.subject = "";
+          todo.value.body = "";
+        }
 
-        getTodo();
-        triggerToast("Successfully saved!");
+        const message =
+          "Successfully " + (props.editing ? "Updated" : "Created") + "!";
+        triggerToast(message);
       } catch (err) {
         console.log(err);
         triggerToast("Something went wrong.", "danger");
@@ -117,7 +152,31 @@ export default {
       showToast,
       toastMessage,
       toastAlertType,
+      subjectError,
     };
   },
 };
 </script>
+
+<style scoped>
+.text-red {
+  color: red;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0px);
+}
+</style>
