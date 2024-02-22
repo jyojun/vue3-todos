@@ -128,8 +128,7 @@ export default {
       toggle.value = !toggle.value;
     };
 
-    const deleteTodo = async (index) => {
-      const id = todos.value[index].id;
+    const deleteTodo = async (id) => {
       try {
         await axios.delete(`http://localhost:3000/todos/${id}`);
         getTodos(1);
