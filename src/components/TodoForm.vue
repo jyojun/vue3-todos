@@ -3,11 +3,11 @@
   <form v-else @submit.prevent="onSave">
     <div class="row">
       <div class="col-6">
-        <div class="form-group">
-          <label>Todo Subject</label>
-          <input v-model="todo.subject" type="text" class="form-control" />
-          <div v-if="subjectError" class="text-red">{{ subjectError }}</div>
-        </div>
+        <Input
+          label="Subject"
+          v-model:subject="todo.subject"
+          :error="subjectError"
+        />
       </div>
       <div v-if="editing" class="col-6">
         <div class="form-group">
@@ -42,21 +42,22 @@
     <button class="btn btn-outline-dark m-2" @click="moveBack">Cancel</button>
   </form>
   <transition name="fade">
-    <toast v-if="showToast" :message="toastMessage" :type="toastAlertType" />
+    <Toast v-if="showToast" :message="toastMessage" :type="toastAlertType" />
   </transition>
 </template>
 
 <script>
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import axios from "@/axios";
 import { ref, computed } from "vue";
 import _ from "lodash";
 import Toast from "@/components/Toast.vue";
 import { useToast } from "@/composables/toast";
-
+import Input from "@/components/Input.vue";
 export default {
   components: {
     Toast,
+    Input,
   },
   props: {
     editing: {
@@ -87,7 +88,7 @@ export default {
     const getTodo = async () => {
       loading.value = true;
       try {
-        const res = await axios.get(`http://localhost:3000/todos/${id}`);
+        const res = await axios.get(`todos/${id}`);
         todo.value = { ...res.data };
         originalTodo.value = { ...res.data };
         loading.value = false;
@@ -122,13 +123,10 @@ export default {
         let res;
         console.log(props.editing);
         if (props.editing) {
-          res = await axios.put(
-            `http://localhost:3000/todos/${id}`,
-            todo.value
-          );
+          res = await axios.put(`todos/${id}`, todo.value);
           originalTodo.value = { ...res.data };
         } else {
-          res = await axios.post(`http://localhost:3000/todos`, todo.value);
+          res = await axios.post(`todos`, todo.value);
           todo.value.subject = "";
           todo.value.body = "";
         }

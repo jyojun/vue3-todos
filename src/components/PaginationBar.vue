@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { getCurrentInstance } from "vue";
 export default {
   props: {
     currentPage: {
@@ -43,7 +44,8 @@ export default {
       required: true,
     },
   },
-  setup(props, { emit }) {
+  setup() {
+    const { emit } = getCurrentInstance();
     const getTodos = (page) => {
       emit("get-todo", page);
     };

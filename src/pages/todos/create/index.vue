@@ -1,6 +1,6 @@
 <template>
   <h1>Create Todo</h1>
-  <todo-form />
+  <TodoForm />
 </template>
 
 <script>

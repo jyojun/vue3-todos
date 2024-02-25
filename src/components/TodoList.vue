@@ -1,29 +1,31 @@
 <template>
-  <div v-for="(todo, index) in todos" :key="todo.id" class="card mt-2">
-    <div
-      class="card-body p-3 d-flex justify-content-between align-items-center"
-      style="cursor: pointer"
-      @click="moveToPage(todo.id)"
-    >
-      <div>
-        <input
-          style="margin-right: 5px"
-          type="checkbox"
-          :checked="todo.completed"
-          @change="toggleTodo(index, $event)"
-          @click.stop
-        />
-        <span :class="{ todo: todo.completed }">{{ todo.subject }}</span>
+  <List :items="todos">
+    <template #default="{ item, index }">
+      <div
+        class="card-body p-3 d-flex justify-content-between align-items-center"
+        style="cursor: pointer"
+        @click="moveToPage(item.id)"
+      >
+        <div>
+          <input
+            style="margin-right: 5px"
+            type="checkbox"
+            :checked="item.completed"
+            @change="toggleTodo(index, $event)"
+            @click.stop
+          />
+          <span :class="{ todo: item.completed }">{{ item.subject }}</span>
+        </div>
+        <div>
+          <button class="btn btn-danger" @click.stop="openModal(item.id)">
+            Delete
+          </button>
+        </div>
       </div>
-      <div>
-        <button class="btn btn-danger" @click.stop="openModal(todo.id)">
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
+    </template>
+  </List>
   <Teleport to="#modal"
-    ><modal
+    ><Modal
       v-if="showModal"
       @close-modal="closeModal"
       @delete-todo="deleteTodo"
@@ -33,10 +35,11 @@
 
 <script>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, getCurrentInstance } from "vue";
 import Modal from "@/components/DeleteModal.vue";
+import List from "@/components/List.vue";
 export default {
-  components: { Modal },
+  components: { Modal, List },
   props: {
     todos: {
       type: Array,
@@ -44,7 +47,8 @@ export default {
     },
   },
   emits: ["toggle-todo", "delete-todo"],
-  setup(props, { emit }) {
+  setup() {
+    const { emit } = getCurrentInstance();
     const router = useRouter();
     const showModal = ref(false);
     const todoDeleteId = ref(null);

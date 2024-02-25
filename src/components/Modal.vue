@@ -22,9 +22,11 @@
 </template>
 
 <script>
+import { getCurrentInstance } from "vue";
 export default {
   emits: ["close-modal"],
-  setup(props, { emit }) {
+  setup() {
+    const { emit } = getCurrentInstance();
     const closeModal = () => {
       emit("close-modal");
     };
