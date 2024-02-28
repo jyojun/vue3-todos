@@ -1,15 +1,17 @@
 <template>
-  <nav-bar />
+  <NavBar />
   <div class="container">
     <router-view />
   </div>
+  <Toast :message="'hello'" :type="'success'" />
 </template>
 
 <script>
 import NavBar from "@/components/NavBar.vue";
+import Toast from "@/components/Toast.vue";
 export default {
-  components: { NavBar },
+  components: { NavBar, Toast },
 };
 </script>
 
-<style></style>
+<style scoped></style>
